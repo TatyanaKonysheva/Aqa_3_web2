@@ -27,7 +27,7 @@ public class OrderCardTest {
         form.$("[data-test-id=phone] input").setValue("+79198886745");
         form.$("[data-test-id=agreement]").click();
         form.$(".button__text").click();
-        form.$(".input__sub").shouldHave(exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+        form.$("[data-test-id='name'].input_invalid .input__sub").shouldHave(exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
     }
 
     @Test
@@ -38,8 +38,7 @@ public class OrderCardTest {
         form.$("[data-test-id=phone] input").setValue("+111");
         form.$("[data-test-id=agreement]").click();
         form.$(".button__text").click();
-        SelenideElement invalidForm = $(".input_invalid");
-        invalidForm.$(".input__sub").shouldHave(exactText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
+        form.$("[data-test-id='phone'].input_invalid .input__sub").shouldHave(exactText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
     }
 
     @Test
@@ -49,7 +48,26 @@ public class OrderCardTest {
         form.$("[data-test-id=name] input").setValue("Конышева Татьяна");
         form.$("[data-test-id=phone] input").setValue("+65666665544");
         form.$(".button__text").click();
-        SelenideElement invalidForm = $(".input_invalid");
-        invalidForm.$(".checkbox__text").shouldHave(exactText("Я соглашаюсь с условиями обработки и использования моих персональных данных и разрешаю сделать запрос в бюро кредитных историй"));
+        form.$(".input_invalid .checkbox__text").shouldHave(exactText("Я соглашаюсь с условиями обработки и использования моих персональных данных и разрешаю сделать запрос в бюро кредитных историй"));
+    }
+
+    @Test
+    void shouldOrderCarsNotFilledInName() {
+        open("http://localhost:9999/");
+        SelenideElement form = $(".form_theme_alfa-on-white");
+        form.$("[data-test-id=phone] input").setValue("+79198886745");
+        form.$("[data-test-id=agreement]").click();
+        form.$(".button__text").click();
+        form.$("[data-test-id='name'].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
+    }
+
+    @Test
+    void shouldOrderCarsNotFilledInPhone() {
+        open("http://localhost:9999/");
+        SelenideElement form = $(".form_theme_alfa-on-white");
+        form.$("[data-test-id=name] input").setValue("Конышева Татьяна");
+        form.$("[data-test-id=agreement]").click();
+        form.$(".button__text").click();
+        form.$("[data-test-id='phone'].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
     }
 }
